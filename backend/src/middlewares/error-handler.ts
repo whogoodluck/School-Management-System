@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express'
+import { ZodError } from 'zod'
 import logger from '../utils/logger'
-import JsonResponse from '../utils/response'
+import { JsonResponse } from '../utils/response'
 
 interface ErrorType extends Error {
   statusCode?: number
@@ -14,20 +15,55 @@ const getErrorResponse = (err: ErrorType) => {
       statusCode: err.statusCode || 400,
       message: err.message
     },
+    ZodError: {
+      statusCode: 400,
+      message: 'Validation error'
+    },
     default: {
       statusCode: err.statusCode || 500,
-      message: 'internal server error'
+      message: 'Internal server error'
     }
   }
 
   return types[err.name] || types['default']
 }
 
-const errorHandler = (err: ErrorType, _req: Request, res: Response, _next: NextFunction) => {
-  const { statusCode, message } = getErrorResponse(err)
+const getZodErrorMessage = (error: ZodError): string => {
+  return error.issues
+    .map(issue => {
+      return `${issue.message}`
+    })
+    .join(', ')
+}
+
+const getZodErrorResponse = (err: ZodError) => {
+  return {
+    statusCode: 400,
+    message: getZodErrorMessage(err)
+  }
+}
+
+const errorHandler = (
+  err: ErrorType | ZodError,
+  _req: Request,
+  res: Response,
+  _next: NextFunction
+) => {
+  let statusCode = 500
+  let message = 'Internal server error'
+
+  if (err instanceof ZodError) {
+    const { statusCode: errStatusCode, message: errMessage } = getZodErrorResponse(err)
+    statusCode = errStatusCode
+    message = errMessage
+    logger.error('Validation Error ->', getZodErrorMessage(err))
+  } else {
+    const { statusCode: errStatusCode, message: errMessage } = getErrorResponse(err)
+    statusCode = errStatusCode
+    message = errMessage
+  }
 
   logger.error(err.message)
-
   return res.status(statusCode).json(new JsonResponse({ status: 'error', message }))
 }
 

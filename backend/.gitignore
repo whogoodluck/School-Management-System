@@ -45,3 +45,5 @@ pids/
 test-results/
 
 /src/generated/prisma
+
+/src/generated/prisma

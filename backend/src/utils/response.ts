@@ -1,4 +1,4 @@
-class JsonResponse<T> {
+export class JsonResponse<T> {
   status: 'success' | 'error'
   message: string
   data?: T
@@ -21,5 +21,3 @@ class JsonResponse<T> {
     this.errors = errors
   }
 }
-
-export default JsonResponse

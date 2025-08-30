@@ -3,6 +3,8 @@ import morgan from 'morgan'
 import cors from 'cors'
 import helmet from 'helmet'
 
+import schoolRouter from './routes/school.route'
+
 import unknownEndpoint from './middlewares/unknown-endpoint'
 import errorHandler from './middlewares/error-handler'
 
@@ -29,6 +31,8 @@ app.get('/', (_req: Request, res: Response) => {
 app.get('/health', (_req: Request, res: Response) => {
   res.send('OK')
 })
+
+app.use('/api/schools', schoolRouter)
 
 app.use(unknownEndpoint)
 app.use(errorHandler as unknown as express.ErrorRequestHandler)
