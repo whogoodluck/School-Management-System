@@ -77,7 +77,7 @@ async function updateSchool(req: Request, res: Response, next: NextFunction) {
 
     const image = req.file
     if (image) {
-      validatedData.image = `${config.BASE_URL}${image.path}`
+      validatedData.image = image.path
     }
 
     const school = await schoolService.updateOne(Number(id), validatedData)

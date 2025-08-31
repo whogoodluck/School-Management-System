@@ -16,8 +16,6 @@ function SchoolDetails() {
   const { id } = useParams()
   const navigate = useNavigate()
 
-  console.log('image', school?.image)
-
   useEffect(() => {
     const fetchSchool = async () => {
       try {
@@ -132,7 +130,7 @@ function SchoolDetails() {
         <div className='overflow-hidden rounded-2xl bg-white shadow-xl'>
           <div className='relative'>
             <img
-              src={school.image}
+              src={'http://localhost:3002/schoolImages/1756653455805-image2.webp'}
               alt={school.name}
               className='h-64 w-full object-cover md:h-80'
             />
