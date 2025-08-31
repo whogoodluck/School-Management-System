@@ -4,6 +4,7 @@ import { createSchoolSchema } from '../schemas/school.schema'
 import schoolService from '../services/school.service'
 import { JsonResponse } from '../utils/response'
 import { HttpError } from '../utils/http-error'
+import config from '@/utils/config'
 
 async function createSchool(req: Request, res: Response, next: NextFunction) {
   try {
@@ -13,6 +14,11 @@ async function createSchool(req: Request, res: Response, next: NextFunction) {
 
     if (existingEmail) {
       throw new HttpError(409, 'Email already exists')
+    }
+
+    const image = req.file
+    if (image) {
+      validatedData.image = `${config.BASE_URL}${image.path}`
     }
 
     const school = await schoolService.createOne(validatedData)
@@ -66,7 +72,13 @@ async function getSchool(req: Request, res: Response, next: NextFunction) {
 async function updateSchool(req: Request, res: Response, next: NextFunction) {
   try {
     const { id } = req.params
+
     const validatedData = createSchoolSchema.parse(req.body)
+
+    const image = req.file
+    if (image) {
+      validatedData.image = `${config.BASE_URL}${image.path}`
+    }
 
     const school = await schoolService.updateOne(Number(id), validatedData)
 

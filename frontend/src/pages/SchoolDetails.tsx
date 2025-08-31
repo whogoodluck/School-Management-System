@@ -16,6 +16,8 @@ function SchoolDetails() {
   const { id } = useParams()
   const navigate = useNavigate()
 
+  console.log('image', school?.image)
+
   useEffect(() => {
     const fetchSchool = async () => {
       try {

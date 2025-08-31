@@ -20,7 +20,8 @@ export const createSchoolSchema = z.object({
     .max(15, 'Contact number must be less than 15 digits')
     .regex(/^[0-9+\-\s()]+$/, 'Contact number contains invalid characters'),
 
-  image: requiredString('Image').url('Please upload a valid image file'),
+  // image: requiredString('Image').url('Please upload a valid image file'),
+  image: z.any(),
 
   email_id: requiredString('Email')
     .email('Invalid email format')

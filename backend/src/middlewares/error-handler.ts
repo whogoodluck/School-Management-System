@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express'
 import { ZodError } from 'zod'
 import logger from '../utils/logger'
 import { JsonResponse } from '../utils/response'
+import multer from 'multer'
 
 interface ErrorType extends Error {
   statusCode?: number
@@ -43,8 +44,33 @@ const getZodErrorResponse = (err: ZodError) => {
   }
 }
 
+const getMulterErrorResponse = (err: multer.MulterError) => {
+  switch (err.code) {
+    case 'LIMIT_FILE_SIZE':
+      return {
+        statusCode: 400,
+        message: 'File size too large. Maximum size is 5MB.'
+      }
+    case 'LIMIT_FILE_COUNT':
+      return {
+        statusCode: 400,
+        message: 'Too many files. Maximum is 10 files.'
+      }
+    case 'LIMIT_UNEXPECTED_FILE':
+      return {
+        statusCode: 400,
+        message: 'Unexpected file field.'
+      }
+    default:
+      return {
+        statusCode: 400,
+        message: 'File upload error occurred.'
+      }
+  }
+}
+
 const errorHandler = (
-  err: ErrorType | ZodError,
+  err: ErrorType | ZodError | multer.MulterError,
   _req: Request,
   res: Response,
   _next: NextFunction
@@ -56,8 +82,12 @@ const errorHandler = (
     const { statusCode: errStatusCode, message: errMessage } = getZodErrorResponse(err)
     statusCode = errStatusCode
     message = errMessage
-    // logger.error('Validation Error ->', getZodErrorMessage(err))
-    console.error('validation err', err)
+    logger.error('Validation Error ->', getZodErrorMessage(err))
+  } else if (err instanceof multer.MulterError) {
+    const { statusCode: errStatusCode, message: errMessage } = getMulterErrorResponse(err)
+    statusCode = errStatusCode
+    message = errMessage
+    logger.error('Multer Error ->', err.message)
   } else {
     const { statusCode: errStatusCode, message: errMessage } = getErrorResponse(err)
     statusCode = errStatusCode

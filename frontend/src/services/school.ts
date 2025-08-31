@@ -1,5 +1,4 @@
 import axios from 'axios'
-import type { CreateSchoolInput } from '../schemas/school.schema'
 
 const BASE_URL = '/api/schools'
 
@@ -18,7 +17,7 @@ export const getSchool = async (id: number) => {
   return response.data
 }
 
-export const updateSchool = async (id: number, data: CreateSchoolInput) => {
+export const updateSchool = async (id: number, data: any) => {
   const response = await axios.put(`${BASE_URL}/${id}`, data)
   return response.data
 }

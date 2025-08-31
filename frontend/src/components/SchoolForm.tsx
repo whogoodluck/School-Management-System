@@ -1,5 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { AlertCircle, Mail, MapPin, Phone, School } from 'lucide-react'
+import { AlertCircle, Mail, MapPin, Phone, School, Upload, X } from 'lucide-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
@@ -18,13 +18,15 @@ const SchoolForm = ({
 }) => {
   const [isPending, setIsPending] = useState(false)
   const [emailError, setEmailError] = useState('')
+  const [imagePreview, setImagePreview] = useState(school?.image || '')
+
   const navigate = useNavigate()
 
   const form = useForm<CreateSchoolInput>({
     resolver: zodResolver(createSchoolSchema),
     defaultValues: {
       name: school?.name || '',
-      image: school?.image || '',
+      image: school?.image || null,
       city: school?.city || '',
       state: school?.state || '',
       contact: school?.contact || '',
@@ -65,17 +67,29 @@ const SchoolForm = ({
   ]
 
   const handleFormSubmit = async (data: CreateSchoolInput) => {
+    const schoolData = new FormData()
+
+    schoolData.append('name', data.name)
+    if (data.image) {
+      schoolData.append('image', data.image)
+    }
+    schoolData.append('city', data.city)
+    schoolData.append('state', data.state)
+    schoolData.append('contact', data.contact)
+    schoolData.append('email_id', data.email_id)
+    schoolData.append('address', data.address)
+
     try {
       setIsPending(true)
 
       if (formType === 'create') {
-        await createSchool(data)
+        await createSchool(schoolData)
         toast.success('School created successfully')
         navigate('/')
       }
 
       if (formType === 'update') {
-        await updateSchool(school!.id, data)
+        await updateSchool(school!.id, schoolData)
         toast.success('School updated successfully')
         navigate(-1)
       }
@@ -132,20 +146,58 @@ const SchoolForm = ({
 
           <div>
             <label className='mb-2 block text-sm font-medium text-gray-700'>School Image</label>
-            <input
-              type='text'
-              {...form.register('image')}
-              className={`w-full rounded-lg border px-4 py-3 transition-colors duration-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500 ${
-                form.formState.errors.image ? 'border-red-500 bg-red-50' : 'border-gray-300'
-              }`}
-              placeholder='Enter image url'
-            />
-            {form.formState.errors.image && (
-              <p className='mt-1 flex items-center gap-1 text-sm text-red-600'>
-                <AlertCircle className='h-4 w-4' />
-                {form.formState.errors.image.message}
-              </p>
-            )}
+            <div className='space-y-4'>
+              {!imagePreview && (
+                <div
+                  className='cursor-pointer rounded-lg border-2 border-dashed border-gray-300 p-6 text-center transition-colors duration-200 hover:border-indigo-400 hover:bg-indigo-50'
+                  onClick={() => document.getElementById('imageInput')?.click()}
+                >
+                  <input
+                    id='imageInput'
+                    type='file'
+                    accept='image/*'
+                    onChange={e => {
+                      const file = e.target.files?.[0]
+                      if (file) {
+                        const reader = new FileReader()
+                        reader.onload = () => {
+                          setImagePreview(reader.result as string)
+                        }
+                        reader.readAsDataURL(file)
+
+                        form.setValue('image', file)
+                      }
+                    }}
+                    className='hidden'
+                  />
+
+                  <div>
+                    <Upload className='mx-auto mb-2 h-8 w-8 text-gray-400' />
+                    <p className='font-medium text-gray-600'>Click to upload school image</p>
+                    <p className='mt-1 text-sm text-gray-400'>PNG, JPG, GIF up to 5MB</p>
+                  </div>
+                </div>
+              )}
+
+              {imagePreview && (
+                <div className='relative'>
+                  <img
+                    src={imagePreview}
+                    alt='School preview'
+                    className='h-48 w-full rounded-lg border border-gray-200 object-cover'
+                  />
+                  <button
+                    onClick={() => {
+                      setImagePreview('')
+                      form.setValue('image', null)
+                    }}
+                    className='absolute top-2 right-2 cursor-pointer rounded-full bg-slate-500 p-1 text-white transition-colors duration-200 hover:bg-slate-600'
+                  >
+                    <X className='h-4 w-4' />
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
 
           <div className='grid grid-cols-1 gap-6 md:grid-cols-2'>
@@ -282,7 +334,6 @@ const SchoolForm = ({
             <Button type='submit' loading={isPending}>
               {formType === 'create' ? 'Create School' : 'Update School'}
             </Button>
-            {/* <button type='submit'>create</button> */}
           </div>
         </form>
       </div>
