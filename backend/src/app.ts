@@ -14,33 +14,14 @@ const app = express()
 
 app.use(express.static('dist'))
 app.use(express.json())
-app.use(
-  morgan('tiny', {
-    skip: req => req.method === 'OPTIONS'
-  })
-)
-app.use(
-  cors({
-    origin: 'http://localhost:5173/',
-    credentials: true
-  })
-)
+app.use(morgan('tiny'))
+app.use(cors())
 app.use(helmet())
 app.use(compression())
 
 app.use(express.urlencoded({ extended: true, limit: '10mb' }))
 
-// app.use('/schoolImages', express.static(path.join(__dirname, '../schoolImages')))
-app.use(
-  '/schoolImages',
-  (req, res, next) => {
-    res.header('Access-Control-Allow-Origin', 'http://localhost:5173')
-    res.header('Access-Control-Allow-Methods', 'GET,HEAD,OPTIONS')
-    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept')
-    next()
-  },
-  express.static(path.join(__dirname, '../schoolImages'))
-)
+app.use('/schoolImages', express.static(path.join(__dirname, '../schoolImages')))
 
 app.get('/', (_req: Request, res: Response) => {
   res.send('Hello World!')

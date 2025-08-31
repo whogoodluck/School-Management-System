@@ -130,7 +130,7 @@ function SchoolDetails() {
         <div className='overflow-hidden rounded-2xl bg-white shadow-xl'>
           <div className='relative'>
             <img
-              src={'http://localhost:3002/schoolImages/1756653455805-image2.webp'}
+              src={school.image}
               alt={school.name}
               className='h-64 w-full object-cover md:h-80'
             />
