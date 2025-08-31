@@ -3,10 +3,17 @@ import { Request, Response, NextFunction } from 'express'
 import { createSchoolSchema } from '../schemas/school.schema'
 import schoolService from '../services/school.service'
 import { JsonResponse } from '../utils/response'
+import { HttpError } from '../utils/http-error'
 
 async function createSchool(req: Request, res: Response, next: NextFunction) {
   try {
     const validatedData = createSchoolSchema.parse(req.body)
+
+    const existingEmail = await schoolService.getOneByEmail(validatedData.email_id)
+
+    if (existingEmail) {
+      throw new HttpError(409, 'Email already exists')
+    }
 
     const school = await schoolService.createOne(validatedData)
 

@@ -5,6 +5,8 @@ export type School = {
   city: string
   state: string
   contact: string
-  email: string
+  email_id: string
   address: string
+  createdAt: string
+  updatedAt: string
 }

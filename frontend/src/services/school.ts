@@ -1,0 +1,29 @@
+import axios from 'axios'
+import type { CreateSchoolInput } from '../schemas/school.schema'
+
+const BASE_URL = '/api/schools'
+
+export const createSchool = async (data: any) => {
+  const response = await axios.post(`${BASE_URL}`, data)
+  return response.data
+}
+
+export const getSchools = async () => {
+  const response = await axios.get(`${BASE_URL}`)
+  return response.data
+}
+
+export const getSchool = async (id: number) => {
+  const response = await axios.get(`${BASE_URL}/${id}`)
+  return response.data
+}
+
+export const updateSchool = async (id: number, data: CreateSchoolInput) => {
+  const response = await axios.put(`${BASE_URL}/${id}`, data)
+  return response.data
+}
+
+export const deleteSchool = async (id: number) => {
+  const response = await axios.delete(`${BASE_URL}/${id}`)
+  return response.data
+}

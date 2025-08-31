@@ -10,7 +10,11 @@ async function createOne(data: CreateSchoolInput) {
 }
 
 async function getAll() {
-  const schools = await prisma.school.findMany()
+  const schools = await prisma.school.findMany({
+    orderBy: {
+      updatedAt: 'desc'
+    }
+  })
 
   return schools
 }
@@ -19,6 +23,16 @@ async function getOne(id: number) {
   const school = await prisma.school.findUnique({
     where: {
       id
+    }
+  })
+
+  return school
+}
+
+async function getOneByEmail(email: string) {
+  const school = await prisma.school.findUnique({
+    where: {
+      email_id: email
     }
   })
 
@@ -48,6 +62,7 @@ export default {
   createOne,
   getAll,
   getOne,
+  getOneByEmail,
   updateOne,
   deleteOne
 }

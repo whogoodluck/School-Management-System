@@ -56,7 +56,8 @@ const errorHandler = (
     const { statusCode: errStatusCode, message: errMessage } = getZodErrorResponse(err)
     statusCode = errStatusCode
     message = errMessage
-    logger.error('Validation Error ->', getZodErrorMessage(err))
+    // logger.error('Validation Error ->', getZodErrorMessage(err))
+    console.error('validation err', err)
   } else {
     const { statusCode: errStatusCode, message: errMessage } = getErrorResponse(err)
     statusCode = errStatusCode

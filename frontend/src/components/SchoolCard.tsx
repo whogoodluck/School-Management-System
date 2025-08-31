@@ -1,17 +1,18 @@
 import { ExternalLink, Mail, MapPin, Phone } from 'lucide-react'
+import { NavLink } from 'react-router-dom'
 import type { School } from '../types/school.type'
 
 function SchoolCard({ school }: { school: School }) {
   return (
     <div className='group transform overflow-hidden rounded-xl bg-white shadow-lg transition-all duration-300 hover:-translate-y-2 hover:shadow-2xl'>
-      <div className='relative overflow-hidden'>
+      <NavLink to={`/schools/${school.id}`} className='relative overflow-hidden'>
         <img
           src={school.image}
           alt={school.name}
           className='h-48 w-full object-cover transition-transform duration-300 group-hover:scale-105'
         />
         <div className='absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100'></div>
-      </div>
+      </NavLink>
 
       <div className='p-6'>
         <h3 className='mb-2 text-xl font-bold text-gray-800 transition-colors duration-200 group-hover:text-indigo-600'>
@@ -35,8 +36,8 @@ function SchoolCard({ school }: { school: School }) {
 
           <div className='flex items-center text-sm text-gray-600 transition-colors duration-200 hover:text-indigo-600'>
             <Mail className='mr-3 h-4 w-4 text-indigo-500' />
-            <a href={`mailto:${school.email}`} className='hover:underline'>
-              {school.email}
+            <a href={`mailto:${school.email_id}`} className='hover:underline'>
+              {school.email_id}
             </a>
           </div>
 
@@ -47,10 +48,13 @@ function SchoolCard({ school }: { school: School }) {
         </div>
 
         <div className='mt-6'>
-          <button className='group/btn flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 px-4 py-2 text-white transition-all duration-200 hover:from-indigo-600 hover:to-purple-700'>
+          <NavLink
+            to={`/schools/${school.id}`}
+            className='group/btn flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-600 px-4 py-2 text-white transition-all duration-200 hover:from-indigo-600 hover:to-purple-700'
+          >
             <span>View Details</span>
             <ExternalLink className='h-4 w-4 transition-transform duration-200 group-hover/btn:translate-x-1' />
-          </button>
+          </NavLink>
         </div>
       </div>
     </div>
