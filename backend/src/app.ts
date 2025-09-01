@@ -18,7 +18,7 @@ app.use(morgan('tiny'))
 
 app.use(
   cors({
-    origin: ['http://localhost:5173', 'https://school-management-system-two-rouge.vercel.app']
+    origin: ['http://localhost:5173', 'https://school-management-system-zeta-wheat.vercel.app']
   })
 )
 
