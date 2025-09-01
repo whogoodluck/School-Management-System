@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const BASE_URL = `${import.meta.env.VITE_API_BASE_URL}/api/schools`
+const BASE_URL = '/api/schools'
 
 export const createSchool = async (data: any) => {
   const response = await axios.post(`${BASE_URL}`, data)

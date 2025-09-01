@@ -15,7 +15,13 @@ const app = express()
 app.use(express.static('dist'))
 app.use(express.json())
 app.use(morgan('tiny'))
-app.use(cors())
+
+app.use(
+  cors({
+    origin: 'http://localhost:5173'
+  })
+)
+
 app.use(helmet())
 app.use(compression())
 
