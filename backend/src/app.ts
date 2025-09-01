@@ -9,6 +9,7 @@ import schoolRouter from './routes/school.route'
 import unknownEndpoint from './middlewares/unknown-endpoint'
 import errorHandler from './middlewares/error-handler'
 import path from 'path'
+import config from './utils/config'
 
 const app = express()
 
@@ -18,7 +19,7 @@ app.use(morgan('tiny'))
 
 app.use(
   cors({
-    origin: 'http://localhost:5173'
+    origin: config.FRONTEND_URL
   })
 )
 
