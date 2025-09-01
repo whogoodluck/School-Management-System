@@ -8,6 +8,5 @@ const FRONTEND_URL = process.env.FRONTEND_URL
 
 export default {
   PORT,
-
   FRONTEND_URL
 }
