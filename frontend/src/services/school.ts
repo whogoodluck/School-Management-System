@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const BASE_URL = '/api/schools'
+const BASE_URL = 'https://school-management-system-yakc.onrender.com/api/schools'
 
 export const createSchool = async (data: any) => {
   const response = await axios.post(`${BASE_URL}`, data)
